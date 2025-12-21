@@ -57,11 +57,14 @@ data:
         "sensors/#"  # รับทุกหัวข้อที่ขึ้นต้นด้วย sensors/
       ]
       data_format = "json" # สมมติว่าข้อมูลส่งมาเป็น JSON (เช่น {"temp": 25})
+      json_string_fields = ["host"]
 
     # --- OUTPUT: เขียนลง TimescaleDB ---
     [[outputs.postgresql]]
       # เรียกไปที่ Service DB (ใส่รหัสผ่านตามที่เราตั้งไว้ใน edge-stack.yaml)
       connection = "postgres://postgres:password@timescaledb-service:5432/iiot_data?sslmode=disable"
+    [[outputs.file]]
+      files = ["stdout"]
 
 ---
 # -----------------------------------------------------------------
