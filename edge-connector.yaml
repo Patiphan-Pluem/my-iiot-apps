@@ -62,7 +62,7 @@ data:
     # --- OUTPUT: เขียนลง TimescaleDB ---
     [[outputs.postgresql]]
       # เรียกไปที่ Service DB (ใส่รหัสผ่านตามที่เราตั้งไว้ใน edge-stack.yaml)
-      connection = "postgres://postgres:password@timescaledb-service:5432/iiot_data?sslmode=disable"
+      connection = "postgres://postgres:password@127.0.0.1:5432/iiot_data?sslmode=disable"
     [[outputs.file]]
       files = ["stdout"]
 
