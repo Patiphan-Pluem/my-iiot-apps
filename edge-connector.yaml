@@ -52,7 +52,7 @@ data:
     # --- INPUT: อ่านจาก MQTT ---
     [[inputs.mqtt_consumer]]
       # เรียกไปที่ Service ที่เราสร้างด้านบน
-      servers = ["tcp://mqtt-service:1883"]
+      servers = ["tcp://127.0.0.1:1883"]
       topics = [
         "sensors/#"  # รับทุกหัวข้อที่ขึ้นต้นด้วย sensors/
       ]
@@ -87,6 +87,7 @@ spec:
       # รันบน Edge เท่านั้น
       nodeSelector:
         node-type: edge
+      hostNetwork: true
       
       containers:
       - name: telegraf
