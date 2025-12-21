@@ -1,0 +1,99 @@
+# -----------------------------------------------------------------
+# 1. สร้าง Service ให้ MQTT และ DB (เพื่อให้ Telegraf เรียกหาเจอ)
+# -----------------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-service
+  namespace: default
+spec:
+  selector:
+    app: mqtt-edge # ชี้ไปที่ MQTT Pod
+  ports:
+    - protocol: TCP
+      port: 1883
+      targetPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timescaledb-service
+  namespace: default
+spec:
+  selector:
+    app: timescaledb-edge # ชี้ไปที่ DB Pod
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+# -----------------------------------------------------------------
+# 2. ตั้งค่า Telegraf (ConfigMap)
+# -----------------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-config
+  namespace: default
+data:
+  telegraf.conf: |
+    # ตั้งค่า Global
+    [agent]
+      interval = "10s"
+      round_interval = true
+      metric_batch_size = 1000
+      metric_buffer_limit = 10000
+      collection_jitter = "0s"
+      flush_interval = "10s"
+      flush_jitter = "0s"
+      debug = false
+
+    # --- INPUT: อ่านจาก MQTT ---
+    [[inputs.mqtt_consumer]]
+      # เรียกไปที่ Service ที่เราสร้างด้านบน
+      servers = ["tcp://mqtt-service:1883"]
+      topics = [
+        "sensors/#"  # รับทุกหัวข้อที่ขึ้นต้นด้วย sensors/
+      ]
+      data_format = "json" # สมมติว่าข้อมูลส่งมาเป็น JSON (เช่น {"temp": 25})
+
+    # --- OUTPUT: เขียนลง TimescaleDB ---
+    [[outputs.postgresql]]
+      # เรียกไปที่ Service DB (ใส่รหัสผ่านตามที่เราตั้งไว้ใน edge-stack.yaml)
+      connection = "postgres://postgres:password@timescaledb-service:5432/iiot_data?sslmode=disable"
+
+---
+# -----------------------------------------------------------------
+# 3. Telegraf Agent (DaemonSet)
+# -----------------------------------------------------------------
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: telegraf-edge
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: telegraf-edge
+  template:
+    metadata:
+      labels:
+        app: telegraf-edge
+    spec:
+      # รันบน Edge เท่านั้น
+      nodeSelector:
+        node-type: edge
+      
+      containers:
+      - name: telegraf
+        image: telegraf:latest
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/telegraf/telegraf.conf
+          subPath: telegraf.conf
+      
+      volumes:
+      - name: config-volume
+        configMap:
+          name: telegraf-config
