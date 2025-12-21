@@ -36,7 +36,6 @@ spec:
       # ⭐️ บังคับให้รันบน Edge Node เท่านั้น
       nodeSelector:
         node-type: edge
-      hostNetwork: true
       
       containers:
       - name: mosquitto
