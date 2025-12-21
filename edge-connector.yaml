@@ -48,7 +48,6 @@ data:
       flush_interval = "10s"
       flush_jitter = "0s"
       debug = false
-      omit_hostname = true
 
     # --- INPUT: อ่านจาก MQTT ---
     [[inputs.mqtt_consumer]]
