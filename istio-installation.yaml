@@ -1,0 +1,51 @@
+# ไฟล์นี้บอก Argo CD ให้ไปดึง Helm Chart ของ Istio มาติดตั้ง
+# เราแยกเป็น 2 App เพื่อความเป็นระเบียบและลำดับการติดตั้งที่ถูกต้อง
+
+# -----------------------------------------------------------
+# 1. Istio Base (CRDs และ Config พื้นฐาน)
+# -----------------------------------------------------------
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-base
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: base
+    targetRevision: 1.20.0 # เลือกเวอร์ชันที่เสถียรและนิยมใช้
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system # สร้าง Namespace แยกสำหรับ Istio โดยเฉพาะ
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true # สั่งให้สร้าง Namespace ให้ด้วยถ้ายังไม่มี
+
+---
+# -----------------------------------------------------------
+# 2. Istiod (Control Plane - สมองของ Istio)
+# -----------------------------------------------------------
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istiod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: istiod
+    targetRevision: 1.20.0
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
