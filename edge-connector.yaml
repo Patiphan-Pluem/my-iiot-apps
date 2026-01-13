@@ -89,7 +89,6 @@ spec:
       # รันบน Edge เท่านั้น
       nodeSelector:
         node-type: edge
-      hostNetwork: true
       
       containers:
       - name: telegraf
