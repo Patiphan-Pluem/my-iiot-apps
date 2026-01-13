@@ -5,7 +5,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mqtt-service
-  namespace: argocd
+  namespace: default
 spec:
   selector:
     app: mqtt-edge # ชี้ไปที่ MQTT Pod
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: timescaledb-service
-  namespace: argocd
+  namespace: default
 spec:
   selector:
     app: timescaledb-edge # ชี้ไปที่ DB Pod
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: telegraf-config
-  namespace: argocd
+  namespace: default
 data:
   telegraf.conf: |
     # ตั้งค่า Global
@@ -74,7 +74,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: telegraf-edge
-  namespace: argocd
+  namespace: default
 spec:
   selector:
     matchLabels:
@@ -84,7 +84,7 @@ spec:
       labels:
         app: telegraf-edge
       annotations:
-        sidecar.istio.io/inject:
+        sidecar.istio.io/inject: "true"
     spec:
       # รันบน Edge เท่านั้น
       nodeSelector:
