@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mqtt-config
-  namespace: default
+  namespace: argocd
 data:
   mosquitto.conf: |
     persistence true
