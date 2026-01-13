@@ -83,6 +83,8 @@ spec:
     metadata:
       labels:
         app: telegraf-edge
+      annotations:
+        sidecar.istio.io/inject:
     spec:
       # รันบน Edge เท่านั้น
       nodeSelector:
