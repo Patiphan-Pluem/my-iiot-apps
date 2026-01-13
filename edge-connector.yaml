@@ -5,7 +5,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mqtt-service
-  namespace: default
+  namespace: argocd
 spec:
   selector:
     app: mqtt-edge # ชี้ไปที่ MQTT Pod
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: timescaledb-service
-  namespace: default
+  namespace: argocd
 spec:
   selector:
     app: timescaledb-edge # ชี้ไปที่ DB Pod
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: telegraf-config
-  namespace: default
+  namespace: argocd
 data:
   telegraf.conf: |
     # ตั้งค่า Global
