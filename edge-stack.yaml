@@ -23,7 +23,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: mqtt-edge-broker
-  namespace: default
+  namespace: argocd
 spec:
   selector:
     matchLabels:
@@ -72,7 +72,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: timescaledb-edge
-  namespace: default
+  namespace: argocd
 spec:
   selector:
     matchLabels:
