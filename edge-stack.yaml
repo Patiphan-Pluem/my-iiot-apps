@@ -32,6 +32,8 @@ spec:
     metadata:
       labels:
         app: mqtt-edge
+      annotations:
+        sidecar.istio.io/inject:
     spec:
       # ⭐️ บังคับให้รันบน Edge Node เท่านั้น
       nodeSelector:
@@ -79,6 +81,8 @@ spec:
     metadata:
       labels:
         app: timescaledb-edge
+      annotations:
+        sidecar.istio.io/inject:
     spec:
       # ⭐️ บังคับให้รันบน Edge Node เท่านั้น
       nodeSelector:
