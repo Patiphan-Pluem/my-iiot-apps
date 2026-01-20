@@ -65,7 +65,9 @@ data:
       connection = "host=timescaledb-service user=postgres password=password database=postgres sslmode=disable"
     [[outputs.file]]
       files = ["stdout"]
-
+    [[outputs.file]]
+      files = ["stdout"]
+      data_format = "json"
 ---
 # -----------------------------------------------------------------
 # 3. Telegraf Agent (DaemonSet)
