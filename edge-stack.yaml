@@ -64,6 +64,24 @@ spec:
           type: DirectoryOrCreate
 
 ---
+
+#------------------------------------------------------------------
+# 2.1 ทางเข้า MQTT
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-edge-broker # ชื่อเดียวกับข้างบนจะได้จำง่าย
+  namespace: default
+spec:
+  type: NodePort         # เปิดรูที่กำแพง
+  selector:
+    app: mqtt-edge-broker # ต้องตรงกับ label ของ Pod ข้างบน
+  ports:
+    - name: tcp-mqtt
+      port: 1883
+      targetPort: 1883
+      nodePort: 31883    # เลขพอร์ตที่จะยิงเข้า
+---
 # -----------------------------------------------------------------
 # 3. TimescaleDB (DaemonSet)
 # -----------------------------------------------------------------
