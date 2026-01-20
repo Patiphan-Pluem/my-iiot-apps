@@ -75,7 +75,7 @@ metadata:
 spec:
   type: NodePort         # เปิดรูที่กำแพง
   selector:
-    app: mqtt-edge-broker # ต้องตรงกับ label ของ Pod ข้างบน
+    app: mqtt-edge # ต้องตรงกับ label ของ Pod ข้างบน
   ports:
     - name: tcp-mqtt
       port: 1883
