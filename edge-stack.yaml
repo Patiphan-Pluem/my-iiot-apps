@@ -44,7 +44,6 @@ spec:
         image: eclipse-mosquitto:2.0
         ports:
         - containerPort: 1883
-          hostPort: 1883 # เปิด Port จริงบนเครื่อง Edge
           protocol: TCP
         volumeMounts:
         - name: config
@@ -69,10 +68,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mqtt-edge-broker # ชื่อเดียวกับข้างบนจะได้จำง่าย
+  name: mqtt-edge-broker 
   namespace: default
 spec:
-  type: NodePort         # เปิดรูที่กำแพง
+  type: NodePort         
   selector:
     app: mqtt-edge # ต้องตรงกับ label ของ Pod ข้างบน
   ports:
@@ -120,7 +119,6 @@ spec:
         
         ports:
         - containerPort: 5432
-          hostPort: 5432 # เปิด Port 5432 บนเครื่อง Edge
           protocol: TCP
           
         # เก็บข้อมูลลง Harddisk
