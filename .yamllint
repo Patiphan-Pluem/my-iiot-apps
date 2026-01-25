@@ -1,0 +1,16 @@
+extends: relaxed
+
+rules:
+  # 1. เรื่องความยาวบรรทัด: ปิดไปเลย (ขี้เกียจแก้)
+  line-length: disable
+  
+  # 2. เรื่องช่องว่างท้ายบรรทัด: ปิด (หยวนๆ ให้)
+  trailing-spaces: disable
+  
+  # 3. เรื่องบรรทัดว่างท้ายไฟล์: ปิด (หยวนๆ ให้)
+  new-line-at-end-of-file: disable
+
+  # 4. เรื่องย่อหน้า (Indentation): เปิดไว้! (สำคัญมาก ห้ามปิด)
+  indentation:
+    spaces: 2  # บังคับว่าต้องย่อหน้าทีละ 2 เคาะ
+    indent-sequences: true

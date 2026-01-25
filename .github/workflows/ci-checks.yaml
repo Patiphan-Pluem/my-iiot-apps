@@ -2,12 +2,11 @@ name: CI - Quality Control
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  # เก็บงานตรวจ YAML ไว้เหมือนเดิม
   yaml-lint:
     runs-on: ubuntu-latest
     steps:
@@ -18,9 +17,8 @@ jobs:
         run: sudo apt-get install yamllint -y
 
       - name: Run yamllint
+        # ไม่ต้อง echo สร้าง config แล้ว! มันจะอ่านจากไฟล์ .yamllint เอง
         run: |
           echo "🔍 Starting YAML Lint check..."
-          # ใช้กฎแบบผ่อนปรน (Relaxed) เพื่อให้ผ่านง่ายขึ้น
-          echo "{extends: relaxed, rules: {line-length: disable, trailing-spaces: disable, new-line-at-end-of-file: disable}}" > .yamllint
           yamllint .
           echo "✅ YAML files are valid!"
