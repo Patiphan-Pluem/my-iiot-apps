@@ -91,16 +91,16 @@ spec:
       # รันบน Edge เท่านั้น
       nodeSelector:
         node-type: edge
-      
+
       containers:
-      - name: telegraf
-        image: telegraf:latest
-        volumeMounts:
-        - name: config-volume
-          mountPath: /etc/telegraf/telegraf.conf
-          subPath: telegraf.conf
-      
+        - name: telegraf
+          image: telegraf:latest
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+
       volumes:
-      - name: config-volume
-        configMap:
-          name: telegraf-config
+        - name: config-volume
+          configMap:
+            name: telegraf-config

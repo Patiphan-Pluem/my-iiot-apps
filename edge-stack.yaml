@@ -38,29 +38,29 @@ spec:
       # ⭐️ บังคับให้รันบน Edge Node เท่านั้น
       nodeSelector:
         node-type: edge
-      
+
       containers:
-      - name: mosquitto
-        image: eclipse-mosquitto:2.0
-        ports:
-        - containerPort: 1883
-          protocol: TCP
-        volumeMounts:
-        - name: config
-          mountPath: /mosquitto/config/mosquitto.conf
-          subPath: mosquitto.conf
-        - name: data
-          mountPath: /mosquitto/data
+        - name: mosquitto
+          image: eclipse-mosquitto:2.0
+          ports:
+            - containerPort: 1883
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+            - name: data
+              mountPath: /mosquitto/data
 
       volumes:
-      - name: config
-        configMap:
-          name: mqtt-config
-      - name: data
-        hostPath:
-          # เก็บข้อมูล MQTT ลงบนเครื่อง Edge จริงๆ (กันข้อมูลหายเมื่อ Pod ตาย)
-          path: /var/lib/edge-mqtt-data
-          type: DirectoryOrCreate
+        - name: config
+          configMap:
+            name: mqtt-config
+        - name: data
+          hostPath:
+            # เก็บข้อมูล MQTT ลงบนเครื่อง Edge จริงๆ (กันข้อมูลหายเมื่อ Pod ตาย)
+            path: /var/lib/edge-mqtt-data
+            type: DirectoryOrCreate
 
 ---
 #------------------------------------------------------------------
@@ -68,17 +68,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mqtt-edge-broker 
+  name: mqtt-edge-broker
   namespace: default
 spec:
-  type: NodePort         
+  type: NodePort
   selector:
     app: mqtt-edge # ต้องตรงกับ label ของ Pod ข้างบน
   ports:
     - name: tcp-mqtt
       port: 1883
       targetPort: 1883
-      nodePort: 31883    # เลขพอร์ตที่จะยิงเข้า
+      nodePort: 31883 # เลขพอร์ตที่จะยิงเข้า
 ---
 # -----------------------------------------------------------------
 # 3. TimescaleDB (DaemonSet)
@@ -102,34 +102,34 @@ spec:
       # ⭐️ บังคับให้รันบน Edge Node เท่านั้น
       nodeSelector:
         node-type: edge
-      
+
       containers:
-      - name: timescaledb
-        # ใช้ Image ของ TimescaleDB (Based on PostgreSQL 14)
-        image: timescale/timescaledb:latest-pg14
-        
-        # ตั้งค่ารหัสผ่าน Database (ในงานจริงควรใช้ Secret)
-        env:
-        - name: POSTGRES_PASSWORD
-          value: "password" # <--- รหัสผ่าน DB
-        - name: POSTGRES_USER
-          value: "postgres"
-        - name: POSTGRES_DB
-          value: "iiot_data"
-        
-        ports:
-        - containerPort: 5432
-          protocol: TCP
-          
-        # เก็บข้อมูลลง Harddisk
-        volumeMounts:
-        - name: db-data
-          mountPath: /var/lib/postgresql/data
+        - name: timescaledb
+          # ใช้ Image ของ TimescaleDB (Based on PostgreSQL 14)
+          image: timescale/timescaledb:latest-pg14
+
+          # ตั้งค่ารหัสผ่าน Database (ในงานจริงควรใช้ Secret)
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "password" # <--- รหัสผ่าน DB
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "iiot_data"
+
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+
+          # เก็บข้อมูลลง Harddisk
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
 
       volumes:
-      - name: db-data
-        hostPath:
-          # ⭐️ สำคัญ: เก็บไฟล์ Database ลงบนเครื่อง Edge (EC2) จริงๆ
-          # เพื่อให้ข้อมูลยังอยู่แม้จะลบ Pod หรือ Restart เครื่อง
-          path: /var/lib/edge-db-data
-          type: DirectoryOrCreate
+        - name: db-data
+          hostPath:
+            # ⭐️ สำคัญ: เก็บไฟล์ Database ลงบนเครื่อง Edge (EC2) จริงๆ
+            # เพื่อให้ข้อมูลยังอยู่แม้จะลบ Pod หรือ Restart เครื่อง
+            path: /var/lib/edge-db-data
+            type: DirectoryOrCreate
