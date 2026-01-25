@@ -24,5 +24,3 @@ jobs:
           echo "{extends: relaxed, rules: {line-length: disable, trailing-spaces: disable, new-line-at-end-of-file: disable}}" > .yamllint
           yamllint .
           echo "✅ YAML files are valid!"
-
-  # ❌ ลบงาน docker-lint ทิ้งไปเลย เพราะเรายังไม่มีไฟล์ให้ตรวจ
