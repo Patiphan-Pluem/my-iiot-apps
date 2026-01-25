@@ -1,0 +1,41 @@
+name: CI - Quality Control
+
+# หุ่นยนต์ตัวนี้จะทำงานเมื่อไหร่?
+on:
+  push:
+    branches: [ "main" ] # เมื่อมีการ Push เข้า Main
+  pull_request:
+    branches: [ "main" ] # เมื่อมีการขอรวม Code (Pull Request)
+
+jobs:
+  # ภารกิจที่ 1: ตรวจสอบความถูกต้องของ YAML (YAML Lint)
+  yaml-lint:
+    runs-on: ubuntu-latest # ขอยืมเครื่อง Ubuntu ของ GitHub มาใช้
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 # ดึงโค้ดของเรามาวางในเครื่อง
+
+      - name: Install yamllint
+        run: sudo apt-get install yamllint -y # ลงโปรแกรมตรวจ YAML
+
+      - name: Run yamllint
+        # สั่งตรวจทุกไฟล์ที่ลงท้ายด้วย .yaml หรือ .yml
+        # ถ้าเจอ Error มันจะหยุดและแจ้งเตือนทันที
+        run: |
+          echo "🔍 Starting YAML Lint check..."
+          # สร้าง config ง่ายๆ ให้มันไม่เข้มงวดเกินไป (เช่น เรื่องความยาวบรรทัด)
+          echo "{extends: relaxed, rules: {line-length: disable}}" > .yamllint
+          yamllint .
+          echo "✅ YAML files are valid!"
+
+  # ภารกิจที่ 2: (ตัวอย่าง) ตรวจสอบว่า Dockerfile เขียนถูกไหม
+  docker-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: error
+        # ถ้าไม่มี Dockerfile ใน Repo ขั้นตอนนี้จะข้ามไป (หรือ Error เบาๆ)
